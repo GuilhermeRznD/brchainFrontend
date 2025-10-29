@@ -1,6 +1,6 @@
 # BRChain - Porto Digital 2025.2
 
-Front End de um aplicativo móvel para o projeto BRChain, focado em agregar e exibir notícias da área da saúde obtidas através de webscraping.
+Front End de um aplicativo móvel para o projeto Porto Digital em parceira com a empresa BRChain, focado em agregar e exibir notícias da área da saúde obtidas através de webscraping.
 
 ## Tecnologias Utilizadas
 
