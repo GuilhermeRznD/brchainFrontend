@@ -19,7 +19,7 @@ Front End de um aplicativo móvel para o projeto Porto Digital em parceira com a
 
 1.  Clone o repositório para sua máquina:
     ```bash
-    git clone [https://github.com/GuilhermeRznD/brchainFrontend]
+    git clone https://github.com/GuilhermeRznD/brchainFrontend
     ```
 
 2.  Acesse a pasta do projeto:
