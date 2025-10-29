@@ -1,6 +1,12 @@
-// src/components/ScreenContainer.tsx
 import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 type Props = {
@@ -14,12 +20,18 @@ const ScreenContainer: React.FC<Props> = ({ children }) => {
       style={styles.gradientContainer}
     >
       <SafeAreaView style={styles.safeArea}>
-        <ScrollView
-          contentContainerStyle={styles.scrollContainer}
-          keyboardShouldPersistTaps="handled"
+        <KeyboardAvoidingView
+          style={styles.keyboardAvoidingContainer}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          {children}
-        </ScrollView>
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            keyboardShouldPersistTaps="handled"
+          >
+        
+            <View style={styles.container}>{children}</View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </LinearGradient>
   );
@@ -33,10 +45,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'transparent',
   },
+  keyboardAvoidingContainer: {
+    flex: 1,
+  },
   scrollContainer: {
     flexGrow: 1,
     justifyContent: 'center',
-    paddingHorizontal: 20, 
+    paddingHorizontal: 20,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
   },
 });
 

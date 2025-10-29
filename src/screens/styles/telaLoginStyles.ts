@@ -2,26 +2,7 @@ import { StyleSheet } from 'react-native';
 import Colors from '../../constants/colors';
 
 export const styles = StyleSheet.create({
-  gradientContainer: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-    backgroundColor: 'transparent',
-  },
-  keyboardAvoidingContainer: {
-    flex: 1,
-  },
  
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
   card: {
     backgroundColor: Colors.cardBackground,
     borderRadius: 16,
@@ -31,12 +12,6 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-  },
-  logo: {
-    width: 300,
-    height: 100,
-    alignSelf: 'center',
-    marginBottom: 10,
   },
   title: {
     fontSize: 28,
@@ -50,41 +25,6 @@ export const styles = StyleSheet.create({
     color: Colors.textSecondary,
     textAlign: 'center',
     marginBottom: 20,
-  },
-  inputGroup: {
-    marginBottom: 15,
-  },
-  inputLabel: {
-    fontSize: 12,
-    color: Colors.textSecondary,
-    marginBottom: 4,
-  },
-  input: {
-    height: 50,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    fontSize: 16,
-    backgroundColor: '#fff',
-  },
-  passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    height: 50,
-    backgroundColor: '#fff',
-  },
-  passwordInput: {
-    flex: 1,
-    height: '100%',
-    paddingHorizontal: 15,
-    fontSize: 16,
-  },
-  toggleButton: {
-    paddingHorizontal: 10,
   },
   forgotPasswordButton: {
     alignItems: 'flex-end',
