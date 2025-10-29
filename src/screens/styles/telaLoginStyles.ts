@@ -2,14 +2,25 @@ import { StyleSheet } from 'react-native';
 import Colors from '../../constants/colors';
 
 export const styles = StyleSheet.create({
+  gradientContainer: {
+    flex: 1,
+  },
   safeArea: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: 'transparent',
+  },
+  keyboardAvoidingContainer: {
+    flex: 1,
+  },
+ 
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 20,
   },
   card: {
     backgroundColor: Colors.cardBackground,
@@ -74,5 +85,14 @@ export const styles = StyleSheet.create({
   },
   toggleButton: {
     paddingHorizontal: 10,
+  },
+  forgotPasswordButton: {
+    alignItems: 'flex-end',
+    marginBottom: 15,
+  },
+  forgotPasswordText: {
+    color: Colors.primary,
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
