@@ -10,6 +10,7 @@ import RecuperarSenhaEmailNaoEncontrado from './src/screens/RecuperarSenhaEmailN
 import RecuperarSenhaToken from './src/screens/RecuperarSenhaToken';
 import RecuperarSenhaNovaSenha from './src/screens/RecuperarSenhaNovaSenha';
 import RecuperarSenhaSucesso from './src/screens/RecuperarSenhaSucesso';
+import CadastroUsuario from './src/screens/CadastroUsuario';
 
 // Nomes e parâmetros de todas as telas
 export type RootStackParamList = {
@@ -19,6 +20,7 @@ export type RootStackParamList = {
   RecuperarSenhaToken: { email: string }; // Passa o email para a próxima tela
   RecuperarSenhaNovaSenha: { email: string; token: string }; // Passa o email e o token
   RecuperarSenhaSucesso: undefined;
+  CadastroUsuario: undefined;
 };
 
 
@@ -39,6 +41,7 @@ export default function App() {
         <Stack.Screen name="RecuperarSenhaToken" component={RecuperarSenhaToken} />
         <Stack.Screen name="RecuperarSenhaNovaSenha" component={RecuperarSenhaNovaSenha} />
         <Stack.Screen name="RecuperarSenhaSucesso" component={RecuperarSenhaSucesso} />
+        <Stack.Screen name="CadastroUsuario" component={CadastroUsuario} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,4 +1,3 @@
-// src/screens/RecuperarSenhaEmailNaoEncontrado.tsx
 import React from 'react';
 import { View, Text } from 'react-native';
 import ScreenContainer from '../components/ScreenContainer';
@@ -15,6 +14,7 @@ type Props = {
 };
 
 const RecuperarSenhaEmailNaoEncontrado: React.FC<Props> = ({ navigation, route }) => {
+  // Pega o email que foi passado como parâmetro para esta tela
   const { email } = route.params;
 
   return (
@@ -30,12 +30,12 @@ const RecuperarSenhaEmailNaoEncontrado: React.FC<Props> = ({ navigation, route }
 
         <Button
           title="Cadastre-se"
-          onPress={() => { /* Navegar para tela de Cadastro */ }}
+          onPress={() => navigation.navigate('CadastroUsuario')}
           variant="secondary"
         />
         <Button
           title="Digitar o email novamente"
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.goBack()} // Volta para a tela anterior
         />
       </View>
     </ScreenContainer>
