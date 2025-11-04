@@ -1,46 +1,43 @@
 // src/screens/TelaLogin.tsx
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import Colors from '../constants/colors';
 import Button from '../components/Button';
 import { styles } from './styles/telaLoginStyles';
-
-//Componentes
 import ScreenContainer from '../components/ScreenContainer';
 import Logo from '../components/Logo';
 import FormInput from '../components/FormInput';
+import { useNavigation } from '@react-navigation/native'; 
+import { StackNavigationProp } from '@react-navigation/stack'; 
+import { RootStackParamList } from '../../App'; 
+
+// Define o tipo de navegação para esta tela
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 const TelaLogin: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  
+  const navigation = useNavigation<LoginScreenNavigationProp>(); 
 
-
-  const handleLogin = () => {
-    console.log('Login:', { email, password });
-  };
-
-  const handleRegister = () => {
-    console.log('Cadastrar-se');
-  };
+  const handleLogin = () => console.log('Login');
+  const handleRegister = () => console.log('Cadastrar-se');
 
   const handleForgotPassword = () => {
-    console.log('Esqueceu a senha');
+    
+    navigation.navigate('RecuperarSenhaEmail');
   };
 
   return (
-    
     <ScreenContainer>
-      
       <View style={styles.card}>
-        
         <Logo />
-
         <Text style={styles.title}>Login</Text>
         <Text style={styles.subtitle}>
           Efetue o login abaixo ou crie uma conta.
         </Text>
 
-        {/* 4. Componente de Input (para Email) */}
         <FormInput
           label="Email"
           value={email}
@@ -49,7 +46,6 @@ const TelaLogin: React.FC = () => {
           autoCapitalize="none"
         />
 
-        {/* 5. Componente de Input (para Senha) */}
         <FormInput
           placeholder="Senha"
           value={password}
