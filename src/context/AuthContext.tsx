@@ -1,13 +1,10 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-
-
 interface User {
   id: string;
   nome: string;
   email: string;
   role: 'admin' | 'user'; //as duas funções
 }
-
 // Define o que o Contexto vai fornecer
 interface AuthContextData {
   isLoggedIn: boolean;
@@ -15,14 +12,11 @@ interface AuthContextData {
   login: (user: User) => void;
   logout: () => void;
 }
-
 //  Cria o Contexto
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
-
 // Cria o "Provedor" 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-
   // Simulação de login
   const login = (userData: User) => {
     setUser(userData);

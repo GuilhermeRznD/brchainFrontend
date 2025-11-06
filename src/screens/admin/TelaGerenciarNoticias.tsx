@@ -1,4 +1,3 @@
-// Onde colar: src/screens/admin/TelaGerenciarNoticias.tsx
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
