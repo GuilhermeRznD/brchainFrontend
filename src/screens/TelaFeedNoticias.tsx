@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text,FlatList } from 'react-native'; 
 import { styles } from './styles/telaFeedNoticiasStyles';
 import CardNoticia, { Noticia } from '../components/CardNoticia';
 import FilterChips from '../components/FilterChips';
 import { useNavigation } from '@react-navigation/native'; 
 import { StackNavigationProp } from '@react-navigation/stack'; 
 import { HomeStackParamList } from '../navigation/HomeStackNavigator'; 
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-//Dados de Exemplo
 const dadosNoticias: Noticia[] = [
   {
     id: '1',
@@ -40,41 +40,50 @@ const dadosNoticias: Noticia[] = [
 
 const filtrosDisponiveis = ['Artigo', 'Dicas de Saúde', 'Notícia'];
 
-
 type FeedScreenNavigationProp = StackNavigationProp<HomeStackParamList, 'Feed'>;
 
 const TelaFeedNoticias: React.FC = () => {
   const [filtroAtivo, setFiltroAtivo] = useState<string>('');
   const navigation = useNavigation<FeedScreenNavigationProp>(); 
+  
+  
   const filtrarNoticias = dadosNoticias.filter(
     (item) => !filtroAtivo || item.type === filtroAtivo
   );
 
+  const renderHeader = () => (
+    <>
+      <View style={styles.cabecalho}>
+        <Text style={styles.tituloPrincipal}>News</Text>
+        <Text style={styles.subtituloPrincipal}>
+          Atualizações que fazem a diferença
+        </Text>
+      </View>
+      <FilterChips
+        filtroAtivo={filtroAtivo}
+        setFiltroAtivo={setFiltroAtivo}
+        filtros={filtrosDisponiveis} 
+      />
+    </>
+  );
+
+  const renderItem = ({ item }: { item: Noticia }) => (
+    <CardNoticia
+      item={item}
+      onPress={() => navigation.navigate('Detalhe', { noticiaId: item.id })}
+    />
+  );
+
   return (
     <SafeAreaView style={styles.areaSegura}>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.cabecalho}>
-          <Text style={styles.tituloPrincipal}>News</Text>
-          <Text style={styles.subtituloPrincipal}>
-            Atualizações que fazem a diferença
-          </Text>
-        </View>
-
-        <FilterChips
-          filtroAtivo={filtroAtivo}
-          setFiltroAtivo={setFiltroAtivo}
-          filtros={filtrosDisponiveis}
-        />
-
-        {filtrarNoticias.map((item) => (
-          <CardNoticia
-            key={item.id}
-            item={item}
-            onPress={() => navigation.navigate('Detalhe', { noticiaId: item.id })}
-          />
-        ))}
-        <View style={{ height: 80 }} />
-      </ScrollView>
+      {/* 5. Trocamos o ScrollView.map pelo FlatList */}
+      <FlatList
+        data={filtrarNoticias} // Passa os dados filtrados
+        renderItem={renderItem} // Diz como renderizar cada item
+        keyExtractor={(item) => item.id} // Diz qual é a ID única
+        ListHeaderComponent={renderHeader} 
+        ListFooterComponent={<View style={{ height: 80 }} />}
+      />
     </SafeAreaView>
   );
 };

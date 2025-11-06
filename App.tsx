@@ -50,7 +50,7 @@ function AppTabs() {
           backgroundColor: Colors.primary,
           borderTopLeftRadius: 15,
           borderTopRightRadius: 15,
-          height: 60,
+          height: 75,
           position: 'absolute',
           elevation: 0,
         },
