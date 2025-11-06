@@ -1,42 +1,46 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+
+// Importa as telas 
 import TelaGerenciamentoADM from '../screens/admin/TelaGerenciamentoADM';
 import TelaGerenciarNoticias from '../screens/admin/TelaGerenciarNoticias';
-// Vamos adicionar as outras telas do fluxo aqui
-// import TelaGerenciarNoticiasADM from '../screens/admin/TelaGerenciarNoticiasADM';
-// import TelaAdicionarNoticia from '../screens/admin/TelaAdicionarNoticia';
-// import TelaEditarNoticia from '../screens/admin/TelaEditarNoticia';
-// import TelaRemoverNoticia from '../screens/admin/TelaRemoverNoticia';
+import TelaListaNoticias from '../screens/admin/TelaListaNoticias';
+import TelaAdicionarNoticia from '../screens/admin/TelaAdicionarNoticia';
+
+// Um componente vazio para as rotas que ainda não existem
+const PlaceholderScreen = () => null; 
+
 
 export type AdminStackParamList = {
-  TelaGerenciamentoADM: undefined; 
-  TelaGerenciarNoticias: undefined; 
-  TelaGerenciarNoticiasADM: undefined; 
-  // AdicionarNoticia: undefined;
-  // EditarNoticia: { noticiaId: string };
-  // RemoverNoticia: { noticiaId: string };
+  TelaGerenciamentoADM: undefined;
+  TelaGerenciarNoticias: undefined;
+  TelaListaNoticias: undefined; 
+  TelaAdicionarNoticia: undefined; 
+  TelaEditarRemoverNoticia: { noticiaId: string }; // (Futuro)
+  TelaEditarNoticia: { noticiaId: string }; // (Futuro)
+  TelaRemoverNoticia: { noticiaId: string }; // (Futuro)
 };
 
 const Stack = createStackNavigator<AdminStackParamList>();
 
 const AdminStackNavigator = () => {
   return (
-    // Este stack gerencia todas as telas do modal
     <Stack.Navigator
       screenOptions={{
-        headerShown: false, 
+        headerShown: false,
       }}
       initialRouteName="TelaGerenciamentoADM"
     >
+      
       <Stack.Screen name="TelaGerenciamentoADM" component={TelaGerenciamentoADM} />
       <Stack.Screen name="TelaGerenciarNoticias" component={TelaGerenciarNoticias} />
+      <Stack.Screen name="TelaListaNoticias" component={TelaListaNoticias} />
+      <Stack.Screen name="TelaAdicionarNoticia" component={TelaAdicionarNoticia} />
       
-      {/* // Novas telas serão adicionadas aqui:
-      <Stack.Screen name="TelaGerenciarNoticiasADM" component={TelaGerenciarNoticiasADM} />
-      <Stack.Screen name="AdicionarNoticia" component={TelaAdicionarNoticia} />
-      <Stack.Screen name="EditarNoticia" component={TelaEditarNoticia} />
-      <Stack.Screen name="RemoverNoticia" component={TelaRemoverNoticia} />
-      */}
+      {/* Placeholders para as rotas futuras*/}
+      <Stack.Screen name="TelaEditarRemoverNoticia" component={PlaceholderScreen} />
+      <Stack.Screen name="TelaEditarNoticia" component={PlaceholderScreen} />
+      <Stack.Screen name="TelaRemoverNoticia" component={PlaceholderScreen} />
 
     </Stack.Navigator>
   );

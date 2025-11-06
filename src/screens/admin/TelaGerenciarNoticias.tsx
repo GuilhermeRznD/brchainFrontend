@@ -5,14 +5,16 @@ import AdminHeader from '../../components/AdminHeader';
 import MenuListItem from '../../components/MenuListItem';
 import { styles } from '../styles/telaGerenciarNoticiasStyles';
 
+
+import { AdminStackParamList } from '../../navigation/AdminStackNavigator';
+
 type Props = {
-  navigation: StackNavigationProp<any>;
+  navigation: StackNavigationProp<AdminStackParamList, 'TelaGerenciarNoticias'>;
 };
 
 const TelaGerenciarNoticias: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      {/* 3. O CABEÇALHO BRANCO */}
       <AdminHeader
         title="Gerenciar Notícias"
         showBackButton={true}
@@ -23,7 +25,7 @@ const TelaGerenciarNoticias: React.FC<Props> = ({ navigation }) => {
       <ScrollView>
         <MenuListItem
           text="Notícias Publicadas"
-          onPress={() => navigation.navigate('TelaGerenciarNoticiasADM')}
+          onPress={() => navigation.navigate('TelaListaNoticias')}
         />
         <MenuListItem
           text="Ver Notícias"
