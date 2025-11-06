@@ -1,30 +1,28 @@
 import React from 'react';
-import { View, Text, StyleSheet, Alert, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Alert } from 'react-native'; 
 import { StackNavigationProp } from '@react-navigation/stack';
-import { AppTabParamList } from '../../App'; 
+import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../../App'; 
 import Button from '../components/Button';
 import Colors from '../constants/colors';
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from '../context/AuthContext';
 
-type PerfilScreenNavigationProp = StackNavigationProp<AppTabParamList, 'Perfil'>;
 
-type Props = {
-  navigation: PerfilScreenNavigationProp;
-};
+type PerfilScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 
-const TelaPerfil: React.FC<Props> = ({ navigation }) => {
-  // PEGamos os dados do usuário e a função de logout
+const TelaPerfil: React.FC = () => {
+  const navigation = useNavigation<PerfilScreenNavigationProp>();
   const { user, logout } = useAuth();
 
   const handleManageNews = () => {
-    Alert.alert('Navegação ADM', 'Aqui iríamos para o AdminStackNavigator');
+    navigation.navigate('AdminStack');
   };
 
   return (
     <SafeAreaView style={styles.areaSegura}>
       <View style={styles.container}>
         <Text style={styles.titulo}>Perfil</Text>
-
+        
         {user && (
           <View style={styles.infoBox}>
             <Text style={styles.infoLabel}>Nome:</Text>
@@ -36,7 +34,6 @@ const TelaPerfil: React.FC<Props> = ({ navigation }) => {
           </View>
         )}
 
-        
         {user?.role === 'admin' && (
           <Button
             title="Gerenciar Notícias (ADM)"
@@ -48,7 +45,7 @@ const TelaPerfil: React.FC<Props> = ({ navigation }) => {
         <View style={{ marginTop: 20 }}>
           <Button
             title="Sair"
-            onPress={logout} 
+            onPress={logout}
             variant="secondary"
           />
         </View>

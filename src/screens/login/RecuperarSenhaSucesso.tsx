@@ -1,12 +1,12 @@
 // src/screens/RecuperarSenhaSucesso.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native'; 
-import Button from '../components/Button';
-import Colors from '../constants/colors';
+import Button from '../../components/Button';
+import Colors from '../../constants/colors';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { AuthStackParamList } from '../../App';
-import ScreenContainer from '../components/ScreenContainer';
-import { styles as sharedStyles } from './styles/telaLoginStyles'; 
+import { AuthStackParamList } from '../../../App';
+import ScreenContainer from '../../components/ScreenContainer';
+import { styles as sharedStyles } from '../styles/telaLoginStyles'; 
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList , 'RecuperarSenhaSucesso'>;

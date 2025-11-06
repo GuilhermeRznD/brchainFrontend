@@ -1,13 +1,8 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {ScrollView,KeyboardAvoidingView,Platform,StyleSheet,View,} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 type Props = {
   children: React.ReactNode;

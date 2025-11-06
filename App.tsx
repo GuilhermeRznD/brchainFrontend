@@ -9,13 +9,13 @@ import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-cont
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 
 // Telas de Autenticação
-import TelaLogin from './src/screens/TelaLogin';
-import CadastroUsuario from './src/screens/CadastroUsuario';
-import RecuperarSenhaEmail from './src/screens/RecuperarSenhaEmail';
-import RecuperarSenhaEmailNaoEncontrado from './src/screens/RecuperarSenhaEmailNaoEncontrado';
-import RecuperarSenhaToken from './src/screens/RecuperarSenhaToken';
-import RecuperarSenhaNovaSenha from './src/screens/RecuperarSenhaNovaSenha';
-import RecuperarSenhaSucesso from './src/screens/RecuperarSenhaSucesso';
+import TelaLogin from './src/screens/login/TelaLogin';
+import CadastroUsuario from './src/screens/login/CadastroUsuario';
+import RecuperarSenhaEmail from './src/screens/login/RecuperarSenhaEmail';
+import RecuperarSenhaEmailNaoEncontrado from './src/screens/login/RecuperarSenhaEmailNaoEncontrado';
+import RecuperarSenhaToken from './src/screens/login/RecuperarSenhaToken';
+import RecuperarSenhaNovaSenha from './src/screens/login/RecuperarSenhaNovaSenha';
+import RecuperarSenhaSucesso from './src/screens/login/RecuperarSenhaSucesso';
 
 // Telas Principais (App)
 import HomeStackNavigator from './src/navigation/HomeStackNavigator';

@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import ScreenContainer from '../components/ScreenContainer';
-import Logo from '../components/Logo';
-import Button from '../components/Button';
-import { styles } from './styles/telaLoginStyles';
+import ScreenContainer from '../../components/ScreenContainer';
+import Logo from '../../components/Logo';
+import Button from '../../components/Button';
+import { styles } from '../styles/telaLoginStyles';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
-import { AuthStackParamList } from '../../App';
+import { AuthStackParamList } from '../../../App';
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList , 'RecuperarSenhaEmailNaoEncontrado'>;

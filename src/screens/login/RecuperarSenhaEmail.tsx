@@ -1,13 +1,13 @@
 // src/screens/RecuperarSenhaEmail.tsx
 import React, { useState } from 'react';
 import { View, Text } from 'react-native';
-import ScreenContainer from '../components/ScreenContainer';
-import Logo from '../components/Logo';
-import FormInput from '../components/FormInput';
-import Button from '../components/Button';
-import { styles } from './styles/telaLoginStyles'; 
+import ScreenContainer from '../../components/ScreenContainer';
+import Logo from '../../components/Logo';
+import FormInput from '../../components/FormInput';
+import Button from '../../components/Button';
+import { styles } from '../styles/telaLoginStyles'; 
 import { StackNavigationProp } from '@react-navigation/stack';
-import { AuthStackParamList }from '../../App';
+import { AuthStackParamList }from '../../../App';
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'RecuperarSenhaEmail'>;

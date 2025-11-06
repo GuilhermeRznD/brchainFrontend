@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import Colors from '../constants/colors';
-import Button from '../components/Button';
-import { styles } from './styles/telaLoginStyles';
-import ScreenContainer from '../components/ScreenContainer';
-import Logo from '../components/Logo';
-import FormInput from '../components/FormInput';
+import Colors from '../../constants/colors';
+import Button from '../../components/Button';
+import { styles } from '../styles/telaLoginStyles';
+import ScreenContainer from '../../components/ScreenContainer';
+import Logo from '../../components/Logo';
+import FormInput from '../../components/FormInput';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { AuthStackParamList } from '../../App'; // Corrigido
+import { AuthStackParamList } from '../../../App'; 
 
-type LoginScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Login'>; // Corrigido
+type LoginScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Login'>; 
 
 const TelaLogin: React.FC = () => {
   const [email, setEmail] = useState<string>('');
