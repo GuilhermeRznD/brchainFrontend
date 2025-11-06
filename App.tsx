@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; 
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Colors from './src/constants/colors';
 
@@ -14,13 +14,11 @@ import RecuperarSenhaEmailNaoEncontrado from './src/screens/RecuperarSenhaEmailN
 import RecuperarSenhaToken from './src/screens/RecuperarSenhaToken';
 import RecuperarSenhaNovaSenha from './src/screens/RecuperarSenhaNovaSenha';
 import RecuperarSenhaSucesso from './src/screens/RecuperarSenhaSucesso';
+import HomeStackNavigator from './src/navigation/HomeStackNavigator';
+import TelaFeedNoticias from './src/screens/TelaFeedNoticias'; 
+const TelaPerfil: React.FC = () => null;
 
-// Telas Principais (App)
-import TelaFeedNoticias from './src/screens/TelaFeedNoticias';
-
-const TelaPerfil: React.FC = () => null; 
-
-
+// Tipos do Stack de Autenticação
 export type RootStackParamList = {
   Login: undefined;
   CadastroUsuario: undefined;
@@ -31,6 +29,7 @@ export type RootStackParamList = {
   RecuperarSenhaSucesso: undefined;
 };
 
+// Tipos do Tab (Rodapé)
 export type AppTabParamList = {
   Home: undefined; 
   Feed: undefined; 
@@ -46,7 +45,7 @@ function AppTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarShowLabel: false, 
+        tabBarShowLabel: false,
         tabBarStyle: {
           backgroundColor: Colors.primary,
           borderTopLeftRadius: 15,
@@ -55,9 +54,9 @@ function AppTabs() {
           position: 'absolute',
           elevation: 0,
         },
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ focused }) => {
           let iconName: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
-          
+
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Feed') {
@@ -67,29 +66,29 @@ function AppTabs() {
           } else {
             iconName = 'help-circle';
           }
-
           return <MaterialCommunityIcons name={iconName} size={28} color="#fff" />;
         },
-        tabBarActiveTintColor: '#fff',
-        tabBarInactiveTintColor: '#fff', 
       })}
     >
-      <Tab.Screen name="Home" component={TelaFeedNoticias} />
-      <Tab.Screen name="Feed" component={TelaFeedNoticias} />
+      <Tab.Screen 
+        name="Home" 
+        component={HomeStackNavigator} 
+      />
+      <Tab.Screen 
+        name="Feed" 
+        component={TelaFeedNoticias} 
+      />
       <Tab.Screen name="Perfil" component={TelaPerfil} />
     </Tab.Navigator>
   );
 }
 
-
 export default function App() {
- 
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Mude para 'false' para ver o Login
+  const [isLoggedIn, setIsLoggedIn] = useState(true); //mudar para false para ver o login
 
   return (
     <NavigationContainer>
       {isLoggedIn ? (
-       
         <AppTabs />
       ) : (
         <Stack.Navigator

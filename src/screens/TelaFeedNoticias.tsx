@@ -1,13 +1,13 @@
-// src/screens/TelaFeedNoticias.tsx
 import React, { useState } from 'react';
-import { View, Text, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { styles } from './styles/telaFeedNoticiasStyles'; 
+import { View, Text, ScrollView, SafeAreaView } from 'react-native';
+import { styles } from './styles/telaFeedNoticiasStyles';
 import CardNoticia, { Noticia } from '../components/CardNoticia';
 import FilterChips from '../components/FilterChips';
+import { useNavigation } from '@react-navigation/native'; 
+import { StackNavigationProp } from '@react-navigation/stack'; 
+import { HomeStackParamList } from '../navigation/HomeStackNavigator'; 
 
-
-// Dados de exemplo
+//Dados de Exemplo
 const dadosNoticias: Noticia[] = [
   {
     id: '1',
@@ -15,7 +15,7 @@ const dadosNoticias: Noticia[] = [
     date: '20/05/2025',
     source: 'Gov.br',
     title: 'Ministério da Saúde descarta caso de gripe aviária...',
-    imageUri: 'https://img.odcdn.com.br/wp-content/uploads/2025/07/gripe_aviaria-1920x1080.jpg',
+    imageUri: 'https://www.gov.br/saude/pt-br/assuntos/noticias/2025/maio/ministerio-da-saude-descarta-caso-de-gripe-aviaria-em-um-trabalhador-do-rio-grande-do-sul/foto-rodrigo-nunesms.png/@@images/43f87492-1ae6-40bc-8729-727e341377de.png',
     category: 'Saúde Pública',
   },
   {
@@ -24,7 +24,7 @@ const dadosNoticias: Noticia[] = [
     date: '11/02/2025',
     source: 'Portal Drauzio Varella',
     title: 'Tomar café da manhã antes de treinar: é recomendado?',
-    imageUri: 'https://s2-ge.glbimg.com/q7DEEhGBtb9I483gx1-h5ZC2Jhw=/0x0:2121x1414/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_bc8228b6673f488aa253bbcb03c80ec5/internal_photos/bs/2025/f/Y/i9IQlWSlymHxkIq9ysgA/istock-1999518057.jpg',
+    imageUri: 'https://portaldrauziovarella.nyc3.digitaloceanspaces.com/wp-content/uploads/2025/02/11121943/Depositphotos_291456806_XL-copia2.jpg',
     category: 'Bem-Estar',
   },
   {
@@ -40,9 +40,12 @@ const dadosNoticias: Noticia[] = [
 
 const filtrosDisponiveis = ['Artigo', 'Dicas de Saúde', 'Notícia'];
 
+
+type FeedScreenNavigationProp = StackNavigationProp<HomeStackParamList, 'Feed'>;
+
 const TelaFeedNoticias: React.FC = () => {
   const [filtroAtivo, setFiltroAtivo] = useState<string>('');
-
+  const navigation = useNavigation<FeedScreenNavigationProp>(); 
   const filtrarNoticias = dadosNoticias.filter(
     (item) => !filtroAtivo || item.type === filtroAtivo
   );
@@ -67,11 +70,10 @@ const TelaFeedNoticias: React.FC = () => {
           <CardNoticia
             key={item.id}
             item={item}
-            onPress={() => console.log('Navegar para notícia:', item.title)}
+            onPress={() => navigation.navigate('Detalhe', { noticiaId: item.id })}
           />
         ))}
-        {/* Espaço extra para não cortar o último card no rodapé */}
-        <View style={{ height: 80 }} /> 
+        <View style={{ height: 80 }} />
       </ScrollView>
     </SafeAreaView>
   );
