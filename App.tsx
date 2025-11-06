@@ -1,10 +1,12 @@
 import 'react-native-gesture-handler';
-import React, { useState } from 'react';
+import React from 'react'; 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Colors from './src/constants/colors';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AuthProvider, useAuth } from './src/context/AuthContext';
 
 // Telas de Autenticação
 import TelaLogin from './src/screens/TelaLogin';
@@ -14,9 +16,11 @@ import RecuperarSenhaEmailNaoEncontrado from './src/screens/RecuperarSenhaEmailN
 import RecuperarSenhaToken from './src/screens/RecuperarSenhaToken';
 import RecuperarSenhaNovaSenha from './src/screens/RecuperarSenhaNovaSenha';
 import RecuperarSenhaSucesso from './src/screens/RecuperarSenhaSucesso';
+
+// Telas Principais (App)
 import HomeStackNavigator from './src/navigation/HomeStackNavigator';
-import TelaFeedNoticias from './src/screens/TelaFeedNoticias'; 
-const TelaPerfil: React.FC = () => null;
+import TelaFeedNoticias from './src/screens/TelaFeedNoticias';
+import TelaPerfil from './src/screens/TelaPerfil';
 
 // Tipos do Stack de Autenticação
 export type RootStackParamList = {
@@ -31,16 +35,18 @@ export type RootStackParamList = {
 
 // Tipos do Tab (Rodapé)
 export type AppTabParamList = {
-  Home: undefined; 
-  Feed: undefined; 
-  Perfil: undefined; 
+  Home: undefined;
+  Feed: undefined;
+  Perfil: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<AppTabParamList>();
 
-
+// Navegador de Abas (Bottom Tab)
 function AppTabs() {
+  const insets = useSafeAreaInsets();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -50,9 +56,10 @@ function AppTabs() {
           backgroundColor: Colors.primary,
           borderTopLeftRadius: 15,
           borderTopRightRadius: 15,
-          height: 75,
+          height: 80, 
           position: 'absolute',
           elevation: 0,
+          paddingBottom: insets.bottom,
         },
         tabBarIcon: ({ focused }) => {
           let iconName: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
@@ -70,21 +77,26 @@ function AppTabs() {
         },
       })}
     >
-      <Tab.Screen 
-        name="Home" 
-        component={HomeStackNavigator} 
-      />
-      <Tab.Screen 
-        name="Feed" 
-        component={TelaFeedNoticias} 
-      />
+      <Tab.Screen name="Home" component={HomeStackNavigator} />
+      <Tab.Screen name="Feed" component={TelaFeedNoticias} />
       <Tab.Screen name="Perfil" component={TelaPerfil} />
     </Tab.Navigator>
   );
 }
 
-export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true); //mudar para false para ver o login
+// NOVO COMPONENTE para decidir qual fluxo mostrar
+const RootNavigator: React.FC = () => {
+  // Pega o estado do Contexto, não mais de um 'useState' local
+  const { isLoggedIn, login } = useAuth();
+
+  // --- SIMULAÇÃO DE LOGIN ---
+  // Para fins de teste, fazemos login como admin ao carregar o app
+  React.useEffect(() => {
+    login({ id: '1', nome: 'Guilherme (Admin)', email: 'guilherme@brchain.com',role: 'admin', });
+    // Para testar como usuário normal, comente o login de admin e descomente este:
+    
+    //login({  id: '2', nome: 'Usuário Comum', email: 'user@brchain.com', role: 'user' });
+  }, []);
 
   return (
     <NavigationContainer>
@@ -105,5 +117,16 @@ export default function App() {
         </Stack.Navigator>
       )}
     </NavigationContainer>
+  );
+}
+
+
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <AuthProvider>
+        <RootNavigator />
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }
