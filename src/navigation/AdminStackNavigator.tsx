@@ -8,9 +8,8 @@ import TelaListaNoticias from '../screens/admin/TelaListaNoticias';
 import TelaAdicionarNoticia from '../screens/admin/TelaAdicionarNoticia';
 import TelaEditarRemoverNoticia from '../screens/admin/TelaEditarRemoverNoticia';
 import TelaEditarNoticia from '../screens/admin/TelaEditarNoticia';
-// import TelaRemoverNoticia from '../screens/admin/TelaRemoverNoticia';
+import TelaRemoverNoticia from '../screens/admin/TelaRemoverNoticia';
 
-const PlaceholderScreen = () => null; 
 
 export type AdminStackParamList = {
   TelaGerenciamentoADM: undefined;
@@ -18,8 +17,8 @@ export type AdminStackParamList = {
   TelaListaNoticias: undefined; 
   TelaAdicionarNoticia: undefined; 
   TelaEditarRemoverNoticia: { noticiaId: string };
-  TelaEditarNoticia: { noticiaId: string }; 
-  TelaRemoverNoticia: { noticiaId: string }; // (Futuro)
+  TelaEditarNoticia: { noticiaId: string };
+  TelaRemoverNoticia: { noticiaId: string }; 
 };
 
 const Stack = createStackNavigator<AdminStackParamList>();
@@ -39,9 +38,7 @@ const AdminStackNavigator = () => {
       <Stack.Screen name="TelaAdicionarNoticia" component={TelaAdicionarNoticia} />
       <Stack.Screen name="TelaEditarRemoverNoticia" component={TelaEditarRemoverNoticia} />
       <Stack.Screen name="TelaEditarNoticia" component={TelaEditarNoticia} />
-      
-      {/* Placeholder para a última rota que falta */}
-      <Stack.Screen name="TelaRemoverNoticia" component={PlaceholderScreen} />
+      <Stack.Screen name="TelaRemoverNoticia" component={TelaRemoverNoticia} />
 
     </Stack.Navigator>
   );
