@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import React from 'react'; 
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Colors from './src/constants/colors';
@@ -19,11 +19,14 @@ import RecuperarSenhaSucesso from './src/screens/RecuperarSenhaSucesso';
 
 // Telas Principais (App)
 import HomeStackNavigator from './src/navigation/HomeStackNavigator';
-import TelaFeedNoticias from './src/screens/TelaFeedNoticias';
+import TelaFeedNoticias from './src/screens/TelaFeedNoticias'; 
 import TelaPerfil from './src/screens/TelaPerfil';
 
+
+import AdminStackNavigator from './src/navigation/AdminStackNavigator';
+
 // Tipos do Stack de Autenticação
-export type RootStackParamList = {
+export type AuthStackParamList = {
   Login: undefined;
   CadastroUsuario: undefined;
   RecuperarSenhaEmail: undefined;
@@ -33,15 +36,39 @@ export type RootStackParamList = {
   RecuperarSenhaSucesso: undefined;
 };
 
-// Tipos do Tab (Rodapé)
-export type AppTabParamList = {
-  Home: undefined;
-  Feed: undefined;
-  Perfil: undefined;
+export type RootStackParamList = {
+  AuthStack: undefined;  // O fluxo de Login
+  AppStack: undefined;   // O fluxo principal (com abas)
+  AdminStack: undefined; // O fluxo de Admin (Modal)
 };
 
-const Stack = createStackNavigator<RootStackParamList>();
+// Tipos do Tab (Rodapé)
+export type AppTabParamList = {
+  Home: undefined; 
+  Feed: undefined; 
+  Perfil: undefined; 
+};
+
+const AuthStackNav = createStackNavigator<AuthStackParamList>();
 const Tab = createBottomTabNavigator<AppTabParamList>();
+const RootStack = createStackNavigator<RootStackParamList>();
+
+function AuthStack() {
+  return (
+    <AuthStackNav.Navigator
+      screenOptions={{ headerShown: false }}
+      initialRouteName="Login"
+    >
+      <AuthStackNav.Screen name="Login" component={TelaLogin} />
+      <AuthStackNav.Screen name="CadastroUsuario" component={CadastroUsuario} />
+      <AuthStackNav.Screen name="RecuperarSenhaEmail" component={RecuperarSenhaEmail} />
+      <AuthStackNav.Screen name="RecuperarSenhaEmailNaoEncontrado" component={RecuperarSenhaEmailNaoEncontrado} />
+      <AuthStackNav.Screen name="RecuperarSenhaToken" component={RecuperarSenhaToken} />
+      <AuthStackNav.Screen name="RecuperarSenhaNovaSenha" component={RecuperarSenhaNovaSenha} />
+      <AuthStackNav.Screen name="RecuperarSenhaSucesso" component={RecuperarSenhaSucesso} />
+    </AuthStackNav.Navigator>
+  );
+}
 
 // Navegador de Abas (Bottom Tab)
 function AppTabs() {
@@ -100,27 +127,32 @@ const RootNavigator: React.FC = () => {
 
   return (
     <NavigationContainer>
-      {isLoggedIn ? (
-        <AppTabs />
-      ) : (
-        <Stack.Navigator
-          screenOptions={{ headerShown: false }}
-          initialRouteName="Login"
-        >
-          <Stack.Screen name="Login" component={TelaLogin} />
-          <Stack.Screen name="CadastroUsuario" component={CadastroUsuario} />
-          <Stack.Screen name="RecuperarSenhaEmail" component={RecuperarSenhaEmail} />
-          <Stack.Screen name="RecuperarSenhaEmailNaoEncontrado" component={RecuperarSenhaEmailNaoEncontrado} />
-          <Stack.Screen name="RecuperarSenhaToken" component={RecuperarSenhaToken} />
-          <Stack.Screen name="RecuperarSenhaNovaSenha" component={RecuperarSenhaNovaSenha} />
-          <Stack.Screen name="RecuperarSenhaSucesso" component={RecuperarSenhaSucesso} />
-        </Stack.Navigator>
-      )}
+      <RootStack.Navigator screenOptions={{ headerShown: false }}>
+        {isLoggedIn ? (
+          // Se estiver logado, mostre o App e o Modal de Admin
+          <RootStack.Group>
+            <RootStack.Screen name="AppStack" component={AppTabs} />
+            <RootStack.Screen 
+              name="AdminStack" 
+              component={AdminStackNavigator}
+              options={{ 
+                presentation: 'modal', 
+                cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS 
+              }}
+            />
+          </RootStack.Group>
+        ) : (
+          // Se não, mostre o fluxo de Autenticação
+          <RootStack.Group>
+            <RootStack.Screen name="AuthStack" component={AuthStack} />
+          </RootStack.Group>
+        )}
+      </RootStack.Navigator>
     </NavigationContainer>
   );
 }
 
-
+// A função principal agora só "provê" os contextos
 export default function App() {
   return (
     <SafeAreaProvider>

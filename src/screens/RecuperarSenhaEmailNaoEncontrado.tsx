@@ -6,11 +6,11 @@ import Button from '../components/Button';
 import { styles } from './styles/telaLoginStyles';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../App';
+import { AuthStackParamList } from '../../App';
 
 type Props = {
-  navigation: StackNavigationProp<RootStackParamList, 'RecuperarSenhaEmailNaoEncontrado'>;
-  route: RouteProp<RootStackParamList, 'RecuperarSenhaEmailNaoEncontrado'>;
+  navigation: StackNavigationProp<AuthStackParamList , 'RecuperarSenhaEmailNaoEncontrado'>;
+  route: RouteProp<AuthStackParamList, 'RecuperarSenhaEmailNaoEncontrado'>;
 };
 
 const RecuperarSenhaEmailNaoEncontrado: React.FC<Props> = ({ navigation, route }) => {

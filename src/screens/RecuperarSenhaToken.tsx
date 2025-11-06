@@ -8,11 +8,11 @@ import { styles } from './styles/telaLoginStyles';
 import TokenInput from '../components/TokenInput'; 
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../App';
+import { AuthStackParamList } from '../../App';
 
 type Props = {
-  navigation: StackNavigationProp<RootStackParamList, 'RecuperarSenhaToken'>;
-  route: RouteProp<RootStackParamList, 'RecuperarSenhaToken'>;
+  navigation: StackNavigationProp<AuthStackParamList, 'RecuperarSenhaToken'>;
+  route: RouteProp<AuthStackParamList, 'RecuperarSenhaToken'>;
 };
 
 const RecuperarSenhaToken: React.FC<Props> = ({ navigation, route }) => {

@@ -4,12 +4,12 @@ import { View, Text, StyleSheet } from 'react-native';
 import Button from '../components/Button';
 import Colors from '../constants/colors';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../App';
+import { AuthStackParamList } from '../../App';
 import ScreenContainer from '../components/ScreenContainer';
 import { styles as sharedStyles } from './styles/telaLoginStyles'; 
 
 type Props = {
-  navigation: StackNavigationProp<RootStackParamList, 'RecuperarSenhaSucesso'>;
+  navigation: StackNavigationProp<AuthStackParamList , 'RecuperarSenhaSucesso'>;
 };
 
 const RecuperarSenhaSucesso: React.FC<Props> = ({ navigation }) => {

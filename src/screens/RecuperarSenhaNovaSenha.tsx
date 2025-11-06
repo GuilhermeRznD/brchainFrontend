@@ -7,10 +7,10 @@ import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 import { styles } from './styles/telaLoginStyles';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../App';
+import { AuthStackParamList } from '../../App';
 
 type Props = {
-  navigation: StackNavigationProp<RootStackParamList, 'RecuperarSenhaNovaSenha'>;
+  navigation: StackNavigationProp<AuthStackParamList , 'RecuperarSenhaNovaSenha'>;
   // route: RouteProp<RootStackParamList, 'RecuperarSenhaNovaSenha'>; // Para pegar email e token
 };
 

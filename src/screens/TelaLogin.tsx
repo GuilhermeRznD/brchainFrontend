@@ -8,17 +8,17 @@ import Logo from '../components/Logo';
 import FormInput from '../components/FormInput';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../App'; 
+import { AuthStackParamList } from '../../App'; // Corrigido
 
-// Define o tipo de navegação para esta tela
-type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+type LoginScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Login'>; // Corrigido
 
 const TelaLogin: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
+  
   const navigation = useNavigation<LoginScreenNavigationProp>();
+
   const handleLogin = () => {
     console.log('Login:', { email, password });
   };
@@ -67,7 +67,7 @@ const TelaLogin: React.FC = () => {
         <Button title="Login" onPress={handleLogin} />
         <Button
           title="Cadastre-se"
-          onPress={handleRegister} 
+          onPress={handleRegister}
           variant="secondary"
         />
       </View>

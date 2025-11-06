@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Alert } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../App';
+import { AuthStackParamList } from '../../App';
 import ScreenContainer from '../components/ScreenContainer';
 import Logo from '../components/Logo';
 import FormInput from '../components/FormInput';
@@ -9,7 +9,7 @@ import Button from '../components/Button';
 import { styles } from './styles/telaLoginStyles';
 
 type Props = {
-  navigation: StackNavigationProp<RootStackParamList, 'CadastroUsuario'>;
+  navigation: StackNavigationProp<AuthStackParamList, 'CadastroUsuario'>;
 };
 
 const CadastroUsuario: React.FC<Props> = ({ navigation }) => {
