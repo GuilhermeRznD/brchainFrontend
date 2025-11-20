@@ -1,6 +1,5 @@
-// src/screens/RecuperarSenhaToken.tsx
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Alert, ActivityIndicator } from 'react-native';
 import ScreenContainer from '../../components/ScreenContainer';
 import Logo from '../../components/Logo';
 import Button from '../../components/Button';
@@ -18,19 +17,39 @@ type Props = {
 const RecuperarSenhaToken: React.FC<Props> = ({ navigation, route }) => {
   const { email } = route.params;
   const [token, setToken] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleContinue = () => {
-    // -----
-    // Chamada de API vai aqui
-    // -----
-    
-    // Simulação
-    const tokenCorreto = true;
-    if (tokenCorreto) {
-      navigation.navigate('RecuperarSenhaNovaSenha', { email, token });
-    } else {
-      // Mostrar uma mensagem de erro (token inválido)
-      console.log('Token inválido');
+  const handleContinue = async () => {
+    if (token.length !== 6) {
+        Alert.alert('Erro', 'O código deve ter 6 dígitos.');
+        return;
+    }
+
+    setIsLoading(true);
+
+    const API_URL = 'http://10.0.2.2:3000/api/auth/verify-token';
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, token }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) { // Status 200
+            Alert.alert('Sucesso!', 'Código verificado. Prossiga para nova senha.');
+            navigation.navigate('RecuperarSenhaNovaSenha', { email, token });
+        } else {
+            Alert.alert('Erro', data.message || 'Token inválido ou expirado. Tente novamente.');
+        }
+
+    } catch (error) {
+        console.error("Erro de Rede:", error);
+        Alert.alert('Erro de Conexão', 'Não foi possível conectar ao servidor API.');
+    } finally {
+        setIsLoading(false);
     }
   };
 
@@ -46,7 +65,17 @@ const RecuperarSenhaToken: React.FC<Props> = ({ navigation, route }) => {
 
         <TokenInput code={token} setCode={setToken} />
 
-        <Button title="Continuar" onPress={handleContinue} />
+        <Button 
+          title={!isLoading ? "Continuar" : undefined}
+          onPress={handleContinue}
+          disabled={isLoading || token.length !== 6} 
+        >
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.text}>Continuar</Text>
+          )}
+        </Button>
       </View>
     </ScreenContainer>
   );

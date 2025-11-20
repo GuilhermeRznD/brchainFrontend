@@ -3,12 +3,13 @@ import { TouchableOpacity, Text, StyleSheet, StyleProp, ViewStyle, TextStyle } f
 import Colors from '../constants/colors';
 
 type Props = {
-  title: string;
+  title?: string; 
   onPress: () => void;
   variant?: 'primary' | 'secondary';
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
-  textStyle?: StyleProp<TextStyle>; 
+  textStyle?: StyleProp<TextStyle>;
+  children?: React.ReactNode; 
 };
 
 const Button: React.FC<Props> = ({
@@ -16,8 +17,9 @@ const Button: React.FC<Props> = ({
   onPress,
   variant = 'primary',
   disabled,
-  style, 
-  textStyle, 
+  style,
+  textStyle,
+  children, 
 }) => {
   const backgroundColor =
     variant === 'primary' ? Colors.primary : Colors.secondary;
@@ -28,13 +30,17 @@ const Button: React.FC<Props> = ({
         styles.button,
         { backgroundColor },
         disabled && styles.disabled,
-        style, 
+        style,
       ]}
       onPress={onPress}
       activeOpacity={0.8}
       disabled={disabled}
     >
-      <Text style={[styles.text, textStyle]}>{title}</Text>
+      {children ? (
+        children
+      ) : (
+        <Text style={[styles.text, textStyle]}>{title}</Text>
+      )}
     </TouchableOpacity>
   );
 };
@@ -46,7 +52,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
-    paddingHorizontal: 20, 
+    paddingHorizontal: 20,
   },
   text: {
     color: '#fff',

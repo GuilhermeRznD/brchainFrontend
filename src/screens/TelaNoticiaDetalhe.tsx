@@ -31,7 +31,7 @@ const TelaNoticiaDetalhe: React.FC = () => {
   useEffect(() => {
     // Lembre-se de usar o IP do seu PC se estiver no Expo Go
     // (ex: '10.0.2.2' para Emulador Android)
-    const API_URL = `http://http://10.0.2.2:3000/api/noticias/${noticiaId}`;
+    const API_URL = `http://10.0.2.2:3000/api/noticias/${noticiaId}`;
     
     fetch(API_URL)
       .then(response => {
