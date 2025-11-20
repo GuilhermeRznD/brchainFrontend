@@ -1,12 +1,12 @@
-// src/screens/RecuperarSenhaNovaSenha.tsx
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Alert, ActivityIndicator } from 'react-native';
 import ScreenContainer from '../../components/ScreenContainer';
 import Logo from '../../components/Logo';
 import FormInput from '../../components/FormInput';
 import Button from '../../components/Button';
 import { styles } from '../styles/telaLoginStyles';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp, useRoute } from '@react-navigation/native'; 
 import { AuthStackParamList } from '../../../App';
 
 type Props = {
@@ -14,23 +14,57 @@ type Props = {
 };
 
 const RecuperarSenhaNovaSenha: React.FC<Props> = ({ navigation }) => {
+  const route = useRoute<RouteProp<AuthStackParamList, 'RecuperarSenhaNovaSenha'>>(); 
+  const { email, token } = route.params; 
+
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [showPass, setShowPass] = useState<boolean>(false);
   const [showConfirmPass, setShowConfirmPass] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false); 
 
-  const handleConfirm = () => {
-    if (password !== confirmPassword) {
-      console.log('As senhas não conferem');
+  const handleConfirm = async () => { 
+    if (!password || !confirmPassword) {
+      Alert.alert('Erro', 'Preencha os campos de senha.');
       return;
     }
-    // -----
-    // Chamada de API vai aqui
-    // -----
-    
-    // Simulação
-    console.log('Senha alterada com sucesso!');
-    navigation.navigate('RecuperarSenhaSucesso');
+
+    if (password !== confirmPassword) {
+      Alert.alert('Erro', 'As senhas não conferem.');
+      return;
+    }
+
+    setIsLoading(true);
+
+    const API_URL = 'http://10.0.2.2:3000/api/auth/reset-password';
+
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email, 
+          token: token, 
+          novaSenha: password, 
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        navigation.navigate('RecuperarSenhaSucesso');
+      } else {
+        Alert.alert('Erro', data.message || 'Falha ao resetar a senha. Tente o fluxo novamente.');
+        navigation.navigate('Login'); 
+      }
+    } catch (error) {
+      console.error("Erro de Conexão:", error);
+      Alert.alert('Erro', 'Não foi possível conectar ao servidor API.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -47,6 +81,7 @@ const RecuperarSenhaNovaSenha: React.FC<Props> = ({ navigation }) => {
           secureTextEntry={!showPass}
           iconName={showPass ? 'eye-off' : 'eye'}
           onIconPress={() => setShowPass(!showPass)}
+          editable={!isLoading}
         />
         <FormInput
           placeholder="Confirme sua senha"
@@ -55,10 +90,21 @@ const RecuperarSenhaNovaSenha: React.FC<Props> = ({ navigation }) => {
           secureTextEntry={!showConfirmPass}
           iconName={showConfirmPass ? 'eye-off' : 'eye'}
           onIconPress={() => setShowConfirmPass(!showConfirmPass)}
+          editable={!isLoading}
         />
 
         <View style={{ marginTop: 10 }}>
-          <Button title="Confirmar" onPress={handleConfirm} />
+          <Button
+            title={!isLoading ? "Confirmar" : undefined}
+            onPress={handleConfirm}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.text}>Confirmar</Text>
+            )}
+          </Button>
         </View>
       </View>
     </ScreenContainer>
