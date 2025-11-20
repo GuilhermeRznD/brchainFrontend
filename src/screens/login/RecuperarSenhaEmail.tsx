@@ -1,6 +1,5 @@
-// src/screens/RecuperarSenhaEmail.tsx
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Alert, ActivityIndicator } from 'react-native';
 import ScreenContainer from '../../components/ScreenContainer';
 import Logo from '../../components/Logo';
 import FormInput from '../../components/FormInput';
@@ -15,21 +14,43 @@ type Props = {
 
 const RecuperarSenhaEmail: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false); 
 
-  const handleContinue = () => {
-    // -----
-    // Chamada da API vai aqui
-    // -----
-    
-    // Simulação da resposta da API
-    const emailExiste = true; // Mude para 'false' para testar o outro fluxo
+  const handleContinue = async () => { 
+    if (!email) {
+        Alert.alert('Erro', 'Por favor, digite o e-mail.');
+        return;
+    }
 
-    if (emailExiste) {
-      // Navega para a tela de inserir o token
-      navigation.navigate('RecuperarSenhaToken', { email: email });
-    } else {
-      // Navega para a tela de email não encontrado
-      navigation.navigate('RecuperarSenhaEmailNaoEncontrado', { email: email });
+    setIsLoading(true);
+
+    const API_URL = 'http://10.0.2.2:3000/api/auth/forgot-password';
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) { 
+            Alert.alert('Sucesso!', 'Verifique seu e-mail para o código de recuperação.');
+            navigation.navigate('RecuperarSenhaToken', { email: email });
+        } else if (response.status === 404) {
+            navigation.navigate('RecuperarSenhaEmailNaoEncontrado', { email: email });
+        } else {
+            Alert.alert('Erro', data.message || 'Falha na solicitação. Tente novamente.');
+        }
+
+    } catch (error) {
+        console.error("Erro de Rede:", error);
+        Alert.alert('Erro de Conexão', 'Não foi possível conectar ao servidor API.');
+    } finally {
+        setIsLoading(false);
     }
   };
 
@@ -48,10 +69,21 @@ const RecuperarSenhaEmail: React.FC<Props> = ({ navigation }) => {
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
+          editable={!isLoading}
         />
 
         <View style={{ marginTop: 10 }}>
-          <Button title="Continuar" onPress={handleContinue} />
+          <Button 
+            title={!isLoading ? "Continuar" : undefined}
+            onPress={handleContinue}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.text}>Continuar</Text>
+            )}
+          </Button>
         </View>
       </View>
     </ScreenContainer>

@@ -2,7 +2,6 @@ import { StyleSheet } from 'react-native';
 import Colors from '../../constants/colors';
 
 export const styles = StyleSheet.create({
- 
   card: {
     backgroundColor: Colors.cardBackground,
     borderRadius: 16,
@@ -33,6 +32,11 @@ export const styles = StyleSheet.create({
   forgotPasswordText: {
     color: Colors.primary,
     fontSize: 14,
+    fontWeight: '600',
+  },
+  text: {
+    color: '#fff',
+    fontSize: 16,
     fontWeight: '600',
   },
 });

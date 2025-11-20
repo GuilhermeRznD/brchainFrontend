@@ -7,6 +7,8 @@ import Logo from '../../components/Logo';
 import FormInput from '../../components/FormInput';
 import Button from '../../components/Button';
 import { styles } from '../styles/telaLoginStyles';
+import { useAuth } from '../../context/AuthContext';
+import { ActivityIndicator } from 'react-native'; 
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'CadastroUsuario'>;
@@ -18,11 +20,14 @@ const CadastroUsuario: React.FC<Props> = ({ navigation }) => {
   const [telefone, setTelefone] = useState<string>('');
   const [senha, setSenha] = useState<string>('');
   const [confirmarSenha, setConfirmarSenha] = useState<string>('');
-
+  
   const [showSenha, setShowSenha] = useState<boolean>(false);
-  const [showConfirmarSenha, setShowConfirmarSenha] = useState<boolean>(false);
+  const [showConfirmarSenha, setConfirmarSenhaShow] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleCadastro = () => {
+  const { login } = useAuth(); 
+
+  const handleCadastro = async () => {
     if (!nome || !email || !senha || !confirmarSenha) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
       return;
@@ -32,20 +37,44 @@ const CadastroUsuario: React.FC<Props> = ({ navigation }) => {
       Alert.alert('Erro', 'As senhas não conferem.');
       return;
     }
+    
+    setIsLoading(true);
 
-    //Lógica de API (simulada por enquanto)
-    console.log('Dados do Cadastro:', { nome, email, telefone, senha });
+    const API_URL = '10.0.2.2:3000/api/auth/register'; 
 
-    // -----
-    // Chamada de API vai aqui
-    // -----
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nome,
+          email,
+          telefone,
+          senha,
+        }),
+      });
 
-    // Simular sucesso e ir para o Login 
-    Alert.alert(
-      'Sucesso!',
-      'Sua conta foi criada. Faça o login para continuar.',
-    );
-    navigation.navigate('Login');
+      const data = await response.json();
+
+      if (response.ok && response.status === 201) {
+        Alert.alert('Sucesso!', 'Sua conta foi criada. Faça o login para continuar.');
+        
+        // Simulação de login direto (ou apenas navega para Login)
+        navigation.navigate('Login'); 
+      } else if (response.status === 409) {
+        Alert.alert('Erro no Cadastro', 'Este email já está cadastrado.');
+      } else {
+        Alert.alert('Erro', data.message || 'Falha ao cadastrar usuário. Tente novamente.');
+      }
+
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Erro de Conexão', 'Não foi possível conectar ao servidor API.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -63,6 +92,7 @@ const CadastroUsuario: React.FC<Props> = ({ navigation }) => {
           value={nome}
           onChangeText={setNome}
           autoCapitalize="words"
+          editable={!isLoading}
         />
 
         <FormInput
@@ -71,6 +101,7 @@ const CadastroUsuario: React.FC<Props> = ({ navigation }) => {
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
+          editable={!isLoading}
         />
 
         <FormInput
@@ -78,6 +109,7 @@ const CadastroUsuario: React.FC<Props> = ({ navigation }) => {
           value={telefone}
           onChangeText={setTelefone}
           keyboardType="phone-pad"
+          editable={!isLoading}
         />
 
         <FormInput
@@ -87,6 +119,7 @@ const CadastroUsuario: React.FC<Props> = ({ navigation }) => {
           secureTextEntry={!showSenha}
           iconName={showSenha ? 'eye-off' : 'eye'}
           onIconPress={() => setShowSenha(!showSenha)}
+          editable={!isLoading}
         />
 
         <FormInput
@@ -95,12 +128,26 @@ const CadastroUsuario: React.FC<Props> = ({ navigation }) => {
           onChangeText={setConfirmarSenha}
           secureTextEntry={!showConfirmarSenha}
           iconName={showConfirmarSenha ? 'eye-off' : 'eye'}
-          onIconPress={() => setShowConfirmarSenha(!showConfirmarSenha)}
+          onIconPress={() => setConfirmarSenhaShow(!showConfirmarSenha)}
+          editable={!isLoading}
         />
 
         <View style={{ marginTop: 10 }}>
-          <Button title="Continuar" onPress={handleCadastro} />
+          <Button
+            title={!isLoading ? "Continuar" : undefined}
+            onPress={handleCadastro}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.text}>Continuar</Text>
+            )}
+          </Button>
         </View>
+        
+        {/* Adiciona um buffer de segurança no final do formulário */}
+        <View style={{ height: 320 }} /> 
       </View>
     </ScreenContainer>
   );
