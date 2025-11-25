@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text,FlatList, ActivityIndicator } from 'react-native'; 
+import { View, Text, FlatList, ActivityIndicator } from 'react-native'; 
 import { styles } from './styles/telaFeedNoticiasStyles';
 import CardNoticia, { Noticia } from '../components/CardNoticia';
 import FilterChips from '../components/FilterChips';
@@ -18,10 +18,9 @@ const TelaFeedNoticias: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [noticiasCompletas, setNoticiasCompletas] = useState<Noticia[]>([]);
 
-  useEffect(() => {
-    // Se estiver usando Expo Go utilize o ip do seu computador como 'localhost'
-    // Se estiver usando o Emulador Android, o 'localhost' é '10.0.2.2'
-    // Se for Emulador iOS, use 'http://localhost:3000/api/noticias'
+  useEffect(() => { 
+    // Emulador Android = '10.0.2.2'
+    // Celular Físico (Expo Go) = Seu IP local 
     fetch('http://10.0.2.2:3000/api/noticias') 
       .then(response => response.json())
       .then((data) => {
@@ -31,15 +30,15 @@ const TelaFeedNoticias: React.FC = () => {
             date: item.data,
             source: item.source,  
             type: item.type,     
-            imageUri: item.imagem,
-            }));
+            imageUri: item.imagem || 'https://placehold.co/600x400/004D40/FFFFFF?text=BRChain+News',
+         }));
          setNoticiasCompletas(dadosFormatados);
       })
       .catch(error => {
         console.error("Erro ao buscar API:", error);
       })
-      .finally(() => setIsLoading(false)); // Para o 'loading'
-  }, []); // O array vazio [] faz isso rodar apenas 1 vez
+      .finally(() => setIsLoading(false)); 
+  }, []); 
 
   const filtrarNoticias = noticiasCompletas.filter(
     (item) => !filtroAtivo || item.type === filtroAtivo
