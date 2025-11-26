@@ -1,19 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native'; // Import para atualizar ao voltar
 import { AdminStackParamList } from '../../navigation/AdminStackNavigator';
 import Colors from '../../constants/colors';
 import AdminHeader from '../../components/AdminHeader';
 import SearchBar from '../../components/SearchBar';
 import AdminListItem from '../../components/AdminListItem';
-import { styles } from '../styles/telaListaNoticias'; 
 
-const dadosNoticiasPublicadas = [
-  { id: '1', title: 'Ministério da Saúde descarta caso...', imageUrl: 'https://www.gov.br/.../image.png' },
-  { id: '2', title: 'Tomar café da manhã antes de treinar...', imageUrl: 'https://portaldrauziovarella.../image.jpg' },
-  { id: '3', title: 'Novos avanços na pesquisa de células-tronco', imageUrl: 'https://unifor.br/.../image.png' },
-];
+// MANTENDO SEU IMPORT DE ESTILO
+import { styles } from '../styles/telaListaNoticias'; 
 
 type Props = {
   navigation: StackNavigationProp<AdminStackParamList, 'TelaListaNoticias'>;
@@ -21,8 +18,31 @@ type Props = {
 
 const TelaListaNoticias: React.FC<Props> = ({ navigation }) => {
   const [busca, setBusca] = useState('');
+  const [noticias, setNoticias] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const noticiasFiltradas = dadosNoticiasPublicadas.filter(item =>
+  // Busca os dados toda vez que a tela ganha foco
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      // Lembre de usar o IP correto (10.0.2.2 para emulador, IP local para dispositivo físico)
+      fetch('http://10.0.2.2:3000/api/admin/todas')
+        .then(r => r.json())
+        .then(data => {
+            // Formata os dados do MongoDB para o componente
+            const formatadas = data.map((item: any) => ({
+                id: item._id,
+                title: item.titulo,
+                imageUrl: item.imagem
+            }));
+            setNoticias(formatadas);
+        })
+        .catch(err => console.error("Erro ao buscar lista admin:", err))
+        .finally(() => setIsLoading(false));
+    }, [])
+  );
+
+  const noticiasFiltradas = noticias.filter(item =>
     item.title.toLowerCase().includes(busca.toLowerCase())
   );
 
@@ -45,7 +65,6 @@ const TelaListaNoticias: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.filterText}>Filtrar por...</Text>
           <TouchableOpacity 
             style={styles.addButton} 
-            // 3. NAVEGAÇÃO CORRIGIDA
             onPress={() => navigation.navigate('TelaAdicionarNoticia')}
           >
             <MaterialCommunityIcons name="plus-circle" size={20} color={Colors.primary} />
@@ -53,22 +72,26 @@ const TelaListaNoticias: React.FC<Props> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <FlatList
-          data={noticiasFiltradas}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <AdminListItem
-              title={item.title}
-              imageUrl={item.imageUrl} 
-              onPress={() => 
-                navigation.navigate('TelaEditarRemoverNoticia', { noticiaId: item.id }) 
+        {isLoading ? (
+            <ActivityIndicator size="large" color={Colors.primary} style={{marginTop: 20}} />
+        ) : (
+            <FlatList
+              data={noticiasFiltradas}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <AdminListItem
+                  title={item.title}
+                  imageUrl={item.imageUrl} 
+                  onPress={() => 
+                    navigation.navigate('TelaEditarRemoverNoticia', { noticiaId: item.id }) 
+                  }
+                />
+              )}
+              ListEmptyComponent={
+                <Text style={styles.emptyText}>Nenhuma notícia encontrada.</Text>
               }
             />
-          )}
-          ListEmptyComponent={
-            <Text style={styles.emptyText}>Nenhuma notícia encontrada.</Text>
-          }
-        />
+        )}
       </View>
     </View>
   );

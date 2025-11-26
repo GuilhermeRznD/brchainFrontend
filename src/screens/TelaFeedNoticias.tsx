@@ -18,9 +18,7 @@ const TelaFeedNoticias: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [noticiasCompletas, setNoticiasCompletas] = useState<Noticia[]>([]);
 
-  useEffect(() => { 
-    // Emulador Android = '10.0.2.2'
-    // Celular Físico (Expo Go) = Seu IP local 
+  useEffect(() => {
     fetch('http://10.0.2.2:3000/api/noticias') 
       .then(response => response.json())
       .then((data) => {
@@ -30,7 +28,7 @@ const TelaFeedNoticias: React.FC = () => {
             date: item.data,
             source: item.source,  
             type: item.type,     
-            imageUri: item.imagem || 'https://placehold.co/600x400/004D40/FFFFFF?text=BRChain+News',
+            imageUri: item.imagem,
          }));
          setNoticiasCompletas(dadosFormatados);
       })

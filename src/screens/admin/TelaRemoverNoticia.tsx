@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
@@ -9,35 +9,45 @@ import Button from '../../components/Button';
 
 import { styles } from '../styles/telaRemoverNoticiaStyles';
 
-// Dados de exemplo (para simular a busca do nome do item)
-const dadosNoticiasPublicadas = [
-  { id: '1', title: 'Ministério da Saúde descarta caso...' },
-  { id: '2', title: 'Tomar café da manhã antes de treinar...' },
-  { id: '3', title: 'Novos avanços na pesquisa de células-tronco' },
-];
-
 type Props = {
   navigation: StackNavigationProp<AdminStackParamList, 'TelaRemoverNoticia'>;
   route: RouteProp<AdminStackParamList, 'TelaRemoverNoticia'>;
 };
 
 const TelaRemoverNoticia: React.FC<Props> = ({ navigation, route }) => {
-  // 1. Pegamos o ID do item
   const { noticiaId } = route.params;
+  const [nomeDoItem, setNomeDoItem] = useState('Carregando...');
+  const [loading, setLoading] = useState(false);
 
-  // 2. Simulamos a busca pelo nome
-  const item = dadosNoticiasPublicadas.find(n => n.id === noticiaId);
-  const nomeDoItem = item ? item.title : 'Item não encontrado';
 
-  const handleRemover = () => {
-    // Lógica de API (Simulada)
-    console.log('Removendo notícia:', noticiaId);
-    
-    Alert.alert('Sucesso', 'Notícia removida!');
-    
-    // 3. Volta para a lista de notícias (TelaListaNoticias)
-    
-    navigation.navigate('TelaListaNoticias');
+  useEffect(() => {
+    fetch(`http://10.0.2.2:3000/api/noticias/${noticiaId}`)
+      .then(r => r.json())
+      .then(data => {
+        setNomeDoItem(data.titulo || 'Item sem título');
+      })
+      .catch(() => setNomeDoItem('Erro ao carregar nome do item'));
+  }, [noticiaId]);
+
+
+  const handleRemover = async () => {
+    setLoading(true);
+    try {
+        const response = await fetch(`http://10.0.2.2:3000/api/admin/remover/${noticiaId}`, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            Alert.alert('Sucesso', 'Notícia removida!');
+            navigation.navigate('TelaListaNoticias'); 
+        } else {
+            Alert.alert('Erro', 'Não foi possível remover a notícia.');
+        }
+    } catch (error) {
+        Alert.alert('Erro', 'Falha na conexão com a API.');
+    } finally {
+        setLoading(false);
+    }
   };
 
   return (
@@ -46,7 +56,7 @@ const TelaRemoverNoticia: React.FC<Props> = ({ navigation, route }) => {
         title="Remover Notícia"
         showBackButton={true}
         onBackPress={() => navigation.goBack()}
-        onMenuPress={() => console.log('Abrir menu lateral')}
+        onMenuPress={() => {}}
       />
       
       <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.contentContainer}>
@@ -63,15 +73,16 @@ const TelaRemoverNoticia: React.FC<Props> = ({ navigation, route }) => {
 
         {/* Botões de Ação */}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={() => navigation.goBack()} disabled={loading}>
             <Text style={styles.cancelText}>Cancelar</Text>
           </TouchableOpacity>
           
           <Button 
-            title="Remover" 
+            title={loading ? "Removendo..." : "Remover"}
             onPress={handleRemover} 
             variant="primary"
-            style={styles.removerButton} 
+            style={styles.removerButton}
+            disabled={loading} 
           />
         </View>
       </ScrollView>

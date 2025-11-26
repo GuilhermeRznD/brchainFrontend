@@ -2,7 +2,8 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Colors from '../constants/colors'; 
+import Colors from '../constants/colors';
+const placeholderImg = require('../../assets/imagem.png');
 
 // Definindo os tipos de dados para a notícia
 export interface Noticia {
@@ -11,8 +12,8 @@ export interface Noticia {
   date: string;
   source: string;
   title: string;
-  imageUri: string;
-  category: string;
+  imageUri?: string | null; 
+  category?: string; 
 }
 
 interface CardNoticiaProps {
@@ -20,30 +21,33 @@ interface CardNoticiaProps {
   onPress: () => void;
 }
 
-const CardNoticia: React.FC<CardNoticiaProps> = ({ item, onPress }) => (
-  <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
-    <Image source={{ uri: item.imageUri }} style={styles.imagemCard} />
-    <View style={styles.overlay}>
-      <View style={[styles.tag, { backgroundColor: getCategoryColor(item.type) }]}>
-        <Text style={styles.textoTag}>{item.type}</Text>
+const CardNoticia: React.FC<CardNoticiaProps> = ({ item, onPress }) => {
+  const imageSource = item.imageUri ? { uri: item.imageUri } : placeholderImg;
+
+  return (
+    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
+      <Image source={imageSource} style={styles.imagemCard} />
+      
+      <View style={styles.overlay}>
+        <View style={[styles.tag, { backgroundColor: getCategoryColor(item.type) }]}>
+          <Text style={styles.textoTag}>{item.type || 'Notícia'}</Text>
+        </View>
+        <Text style={styles.infoCard}>
+          {item.source} | Publicado em {item.date}
+        </Text>
+        <Text style={styles.tituloCard}>{item.title}</Text>
+        <MaterialCommunityIcons
+          name="chevron-right"
+          size={24}
+          color="#fff"
+          style={styles.iconeSeta}
+        />
       </View>
-      <Text style={styles.infoCard}>
-        {item.source} | Publicado em {item.date}
-      </Text>
-      <Text style={styles.tituloCard}>{item.title}</Text>
-      <MaterialCommunityIcons
-        name="chevron-right"
-        size={24}
-        color="#fff"
-        style={styles.iconeSeta}
-      />
-    </View>
-  </TouchableOpacity>
-);
+    </TouchableOpacity>
+  );
+};
 
-
-const getCategoryColor = (type: string) => {
-  
+const getCategoryColor = (type: string = '') => {
   switch (type.toLowerCase()) {
     case 'artigo':
       return '#90D788';
@@ -55,7 +59,6 @@ const getCategoryColor = (type: string) => {
       return Colors.primary;
   }
 };
-
 
 export const styles = StyleSheet.create({
   card: {
@@ -75,10 +78,11 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     position: 'absolute',
+    resizeMode: 'cover', 
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
     justifyContent: 'flex-end',
     padding: 15,
   },
@@ -97,7 +101,7 @@ export const styles = StyleSheet.create({
   infoCard: {
     fontSize: 12,
     color: '#fff',
-    opacity: 0.8,
+    opacity: 0.9,
     marginBottom: 5,
   },
   tituloCard: {
