@@ -23,4 +23,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.textSecondary,
   },
+  searchBar: {
+    marginTop: 15,
+  },
 });
