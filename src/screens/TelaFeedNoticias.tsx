@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, ActivityIndicator } from 'react-native'; 
+import { View, Text, FlatList, ActivityIndicator } from 'react-native';
 import { styles } from './styles/telaFeedNoticiasStyles';
 import CardNoticia, { Noticia } from '../components/CardNoticia';
-import FilterChips from '../components/FilterChips';
-import { useNavigation } from '@react-navigation/native'; 
-import { StackNavigationProp } from '@react-navigation/stack'; 
-import { HomeStackParamList } from '../navigation/HomeStackNavigator'; 
+import SearchBar from '../components/SearchBar';
+import FilterButton from '../components/FilterButton';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { HomeStackParamList } from '../navigation/HomeStackNavigator';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const filtrosDisponiveis = ['Artigo', 'Dicas de Saúde', 'Notícia'];
+const filtrosDisponiveis = ['Notícia', 'Dicas de Saúde'];
 
 type FeedScreenNavigationProp = StackNavigationProp<HomeStackParamList, 'Feed'>;
 
 const TelaFeedNoticias: React.FC = () => {
   const [filtroAtivo, setFiltroAtivo] = useState<string>('');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const handleFilterToggle = () => {
+    if (isFilterOpen) setFiltroAtivo('');
+    setIsFilterOpen((prev) => !prev);
+  };
   const navigation = useNavigation<FeedScreenNavigationProp>(); 
   const [isLoading, setIsLoading] = useState(true);
   const [noticiasCompletas, setNoticiasCompletas] = useState<Noticia[]>([]);
@@ -49,11 +56,14 @@ const TelaFeedNoticias: React.FC = () => {
         <Text style={styles.subtituloPrincipal}>
           Atualizações que fazem a diferença
         </Text>
+        <SearchBar containerStyle={styles.searchBar} />
       </View>
-      <FilterChips
+      <FilterButton
         filtroAtivo={filtroAtivo}
         setFiltroAtivo={setFiltroAtivo}
-        filtros={filtrosDisponiveis} 
+        filtros={filtrosDisponiveis}
+        isOpen={isFilterOpen}
+        onToggle={handleFilterToggle}
       />
     </>
   );
