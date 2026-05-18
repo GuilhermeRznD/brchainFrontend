@@ -1,15 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, ActivityIndicator } from 'react-native';
-import { styles } from './styles/telaFeedNoticiasStyles';
-import CardNoticia, { Noticia } from '../components/CardNoticia';
-import SearchBar from '../components/SearchBar';
-import FilterButton from '../components/FilterButton';
+// src/screens/TelaFeedNoticias.tsx
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { HomeStackParamList } from '../navigation/HomeStackNavigator';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-const filtrosDisponiveis = ['Notícia', 'Dicas de Saúde'];
+import CardNoticia, { Noticia } from '../components/CardNoticia';
+import FilterChips from '../components/FilterChips';
+import { HomeStackParamList } from '../navigation/HomeStackNavigator';
+
+// ─── Configuração ─────────────────────────────────────────────────────────────
+
+// Porta 8000 = padrão do FastAPI (seu back-end usa API_PORT=8000 no config.py)
+// 10.0.2.2 = endereço especial que o emulador Android usa para acessar o localhost da máquina
+const API_BASE = 'http://10.0.2.2:8000';
+
+// ID do usuário — futuramente virá do contexto de autenticação (AuthContext)
+const USER_ID = 'demo-user';
+
+const FILTROS_DISPONIVEIS = ['Artigo', 'Dicas de Saúde', 'Notícia'];
 
 type FeedScreenNavigationProp = StackNavigationProp<HomeStackParamList, 'Feed'>;
 
@@ -19,13 +28,7 @@ const TelaFeedNoticias: React.FC = () => {
   const navigation = useNavigation<FeedScreenNavigationProp>();
 
   const [filtroAtivo, setFiltroAtivo] = useState<string>('');
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-
-  const handleFilterToggle = () => {
-    if (isFilterOpen) setFiltroAtivo('');
-    setIsFilterOpen((prev) => !prev);
-  };
-  const navigation = useNavigation<FeedScreenNavigationProp>(); 
+  const [todasNoticias, setTodasNoticias] = useState<Noticia[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
 
@@ -85,12 +88,10 @@ const TelaFeedNoticias: React.FC = () => {
           Atualizações que fazem a diferença
         </Text>
       </View>
-      <FilterButton
+      <FilterChips
+        filtros={FILTROS_DISPONIVEIS}
         filtroAtivo={filtroAtivo}
         setFiltroAtivo={setFiltroAtivo}
-        filtros={filtrosDisponiveis}
-        isOpen={isFilterOpen}
-        onToggle={handleFilterToggle}
       />
     </View>
   );
