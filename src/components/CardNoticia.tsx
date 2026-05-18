@@ -1,19 +1,20 @@
 // src/components/CardNoticia.tsx
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'; 
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Colors from '../constants/colors';
+
 const placeholderImg = require('../../assets/imagem.png');
 
-// Definindo os tipos de dados para a notícia
 export interface Noticia {
   id: string;
   type: string;
   date: string;
   source: string;
   title: string;
-  imageUri?: string | null; 
-  category?: string; 
+  imageUri?: string | null;
+  url?: string;       // ← adicionado: URL original para o WebView
+  category?: string;  // tópico para o sistema de recomendação
 }
 
 interface CardNoticiaProps {
@@ -27,7 +28,7 @@ const CardNoticia: React.FC<CardNoticiaProps> = ({ item, onPress }) => {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
       <Image source={imageSource} style={styles.imagemCard} />
-      
+
       <View style={styles.overlay}>
         <View style={[styles.tag, { backgroundColor: getCategoryColor(item.type) }]}>
           <Text style={styles.textoTag}>{item.type || 'Notícia'}</Text>
@@ -78,11 +79,11 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     position: 'absolute',
-    resizeMode: 'cover', 
+    resizeMode: 'cover',
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
     padding: 15,
   },
