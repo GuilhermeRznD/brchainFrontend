@@ -1,5 +1,5 @@
 // src/screens/TelaFeedNoticias.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -11,14 +11,7 @@ import { HomeStackParamList } from '../navigation/HomeStackNavigator';
 
 // ─── Configuração ─────────────────────────────────────────────────────────────
 
-// Porta 8000 = padrão do FastAPI (seu back-end usa API_PORT=8000 no config.py)
-// 10.0.2.2 = endereço especial que o emulador Android usa para acessar o localhost da máquina
-const API_BASE = 'http://10.0.2.2:8000';
-
-// ID do usuário — futuramente virá do contexto de autenticação (AuthContext)
-const USER_ID = 'demo-user';
-
-const FILTROS_DISPONIVEIS = ['Artigo', 'Dicas de Saúde', 'Notícia'];
+import { API_BASE, USER_ID } from '../config/api';
 
 type FeedScreenNavigationProp = StackNavigationProp<HomeStackParamList, 'Feed'>;
 
@@ -32,9 +25,7 @@ const TelaFeedNoticias: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
 
-  // ── Busca o feed do usuário ──────────────────────────────────────────────
-  // O back-end já faz a ingestão, classificação e ranqueamento.
-  // O endpoint GET /feed/{user_id} devolve os artigos ordenados por relevância.
+  // ── Busca o feed ─────────────────────────────────────────────────────────
   const buscarFeed = useCallback(async () => {
     setIsLoading(true);
     setErro(null);
@@ -44,8 +35,6 @@ const TelaFeedNoticias: React.FC = () => {
 
       const data = await response.json();
 
-      // O back-end retorna { items: ArticleResponse[] }
-      // Mapeamos para o formato que o CardNoticia espera
       const formatados: Noticia[] = data.items.map((item: any) => ({
         id:       item.id,
         title:    item.title ?? 'Sem título',
@@ -53,9 +42,7 @@ const TelaFeedNoticias: React.FC = () => {
                     ? new Date(item.published_at).toLocaleDateString('pt-BR')
                     : '',
         source:   item.source_name ?? 'Fonte desconhecida',
-        // dominant_category é a categoria classificada pelo back-end
-        // ex: "Exercício Físico", "Nutrição" — usamos como "type" para o filtro
-        type:     item.dominant_category ?? 'Notícia',
+        type:     item.dominant_category ?? 'Geral',
         imageUri: item.image ?? null,
         url:      item.url ?? '',
       }));
@@ -73,11 +60,20 @@ const TelaFeedNoticias: React.FC = () => {
     buscarFeed();
   }, [buscarFeed]);
 
+  // ── Filtros dinâmicos ────────────────────────────────────────────────────
+  // Gerados automaticamente a partir das categorias presentes no feed.
+  // useMemo garante que só recalcula quando todasNoticias mudar —
+  // sem loops extras ou re-renders desnecessários.
+  const filtrosDisponiveis = useMemo(() => {
+    const categorias = todasNoticias.map((n) => n.type).filter(Boolean);
+    return [...new Set(categorias)].sort(); // remove duplicatas e ordena A-Z
+  }, [todasNoticias]);
+
   // ── Filtragem local ──────────────────────────────────────────────────────
-  // O feed já vem ranqueado do back — apenas filtramos visualmente por categoria
-  const noticiasFiltradas = todasNoticias.filter(
-    (item) => !filtroAtivo || item.type === filtroAtivo,
-  );
+  const noticiasFiltradas = useMemo(() => {
+    if (!filtroAtivo) return todasNoticias;
+    return todasNoticias.filter((item) => item.type === filtroAtivo);
+  }, [todasNoticias, filtroAtivo]);
 
   // ── Sub-componentes ──────────────────────────────────────────────────────
   const renderHeader = () => (
@@ -89,7 +85,7 @@ const TelaFeedNoticias: React.FC = () => {
         </Text>
       </View>
       <FilterChips
-        filtros={FILTROS_DISPONIVEIS}
+        filtros={filtrosDisponiveis}
         filtroAtivo={filtroAtivo}
         setFiltroAtivo={setFiltroAtivo}
       />

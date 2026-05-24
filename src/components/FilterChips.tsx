@@ -1,3 +1,4 @@
+// src/components/FilterChips.tsx
 import React from 'react';
 import { ScrollView, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Colors from '../constants/colors';
@@ -8,18 +9,35 @@ type Props = {
   filtros: string[];
 };
 
-const FilterChips: React.FC<Props> = ({
-  filtroAtivo,
-  setFiltroAtivo,
-  filtros,
-}) => {
+// Paleta de cores para os tópicos do Tags.json
+// Cada categoria tem uma cor única para facilitar a identificação visual
+const CORES_CATEGORIAS: Record<string, string> = {
+  'Nutrição':     '#FFC042',
+  'Treino':       '#90D788',
+  'Sono':         '#9B8FE8',
+  'Saúde Mental': '#F28B82',
+  'Doenças':      '#50D8E8',
+  'Prevenção':    '#81C995',
+  'Medicina':     '#78B9E8',
+  'Pesquisa':     '#E8A870',
+};
+
+const getCategoryColor = (tipo: string): string => {
+  return CORES_CATEGORIAS[tipo] ?? Colors.primary;
+};
+
+const FilterChips: React.FC<Props> = ({ filtroAtivo, setFiltroAtivo, filtros }) => {
   return (
     <View style={styles.container}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         {filtros.map((filtro) => {
           const isAtivo = filtroAtivo === filtro;
           const cor = getCategoryColor(filtro);
-          
+
           return (
             <TouchableOpacity
               key={filtro}
@@ -42,23 +60,12 @@ const FilterChips: React.FC<Props> = ({
   );
 };
 
-const getCategoryColor = (type: string) => {
-  switch (type.toLowerCase()) {
-    case 'artigo':
-      return '#90D788';
-    case 'dicas de saúde':
-      return '#FFC042';
-    case 'notícia':
-      return '#50D8E8';
-    default:
-      return Colors.primary;
-  }
-};
-
 const styles = StyleSheet.create({
   container: {
-    paddingLeft: 20,
     marginVertical: 15,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
   },
   chip: {
     borderRadius: 20,
